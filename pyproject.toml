@@ -1,0 +1,18 @@
+[project]
+name = "emm-6"
+version = "0.1.0"
+description = "EMM-6 microphone calibration tools"
+requires-python = ">=3.13"
+dependencies = [
+    "numpy>=2.4.2",
+]
+
+[project.scripts]
+adjust-cal = "emm6.adjust_cal:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["emm6"]
