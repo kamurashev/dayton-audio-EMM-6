@@ -1,6 +1,22 @@
-# EMM-6 Microphone Calibration
+# Dayton Audio EMM-6 — 90° Calibration File
 
-Tools for adjusting Dayton Audio EMM-6 calibration files.
+The Dayton Audio EMM-6 measurement microphone ships with an individual calibration file for 0° (on-axis) incidence only. However, many real-world measurement scenarios — such as car audio system tuning — require a 90° (random/diffuse-field) calibration, where the microphone is pointed upward and sound arrives from the side. Without a proper 90° calibration file, high-frequency measurements can be off by several dB due to the microphone's directional response.
+
+This project derives a 90° calibration file from the original 0° calibration using a pair of measurements taken with [REW (Room EQ Wizard)](https://www.roomeqwizard.com/).
+
+## How It Was Done
+
+1. **Two measurements of the same source** — a pink noise signal was measured twice with the EMM-6, using the original 0° calibration file applied in REW:
+   - First measurement: microphone pointed directly at the source (0°)
+   - Second measurement: microphone at 90° to the source (sideways)
+
+2. **Extracting the directional difference** — in REW, the Trace Arithmetic function (A / B) was used to divide the 0° measurement by the 90° measurement. This produces a frequency-dependent dB curve representing the microphone's sensitivity difference between the two angles.
+
+3. **Applying the correction** — the exported difference curve (`0over90.txt`) was subtracted from a copy of the original 0° calibration file using the `adjust-cal` script. The correction is applied from 100 Hz upward, since the microphone's directional behavior is negligible at low frequencies and the measurement data below that range is unreliable.
+
+## Calibration Curves
+
+![Calibration Curves](calibration_curves.png)
 
 ## Setup
 
@@ -16,8 +32,8 @@ Subtract interpolated correction values from a calibration file:
 # Using the CLI entry point
 uv run adjust-cal <calibration_file> <reference_file> <start_freq> [--fade-in]
 
-# Or directly
-uv run python3 emm6/adjust_cal.py <calibration_file> <reference_file> <start_freq> [--fade-in]
+# Or directly with Python
+python3 emm6/adjust_cal.py <calibration_file> <reference_file> <start_freq> [--fade-in]
 ```
 
 ### Arguments
@@ -36,3 +52,11 @@ uv run python3 emm6/adjust_cal.py <calibration_file> <reference_file> <start_fre
 uv run adjust-cal 34814_90deg.txt 0over90_100hz+.txt 100
 uv run adjust-cal 34814_90deg.txt 0over90_100hz+.txt 60 --fade-in
 ```
+
+## Files
+
+| File | Description |
+|------|-------------|
+| `34814_0deg.txt` | Original 0° calibration file (from Dayton Audio) |
+| `34814_90deg.txt` | Derived 90° calibration file |
+| `0over90_100hz+.txt` | REW trace arithmetic export (0° / 90° difference) |
