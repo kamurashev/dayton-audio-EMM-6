@@ -10,13 +10,25 @@ This project derives a 90° calibration file from the original 0° calibration u
    - First measurement: microphone pointed directly at the source (0°)
    - Second measurement: microphone at 90° to the source (sideways)
 
-2. **Extracting the directional difference** — in REW, the Trace Arithmetic function (A / B) was used to divide the 0° measurement by the 90° measurement. This produces a frequency-dependent dB curve representing the microphone's sensitivity difference between the two angles.
+2. **Extracting the directional difference** — in REW, the Trace Arithmetic function (A / B) was used to divide the 0° measurement by the 90° measurement. This produces a frequency-dependent dB curve representing how the microphone's sensitivity differs between the two angles.
 
-3. **Applying the correction** — the exported difference curve (`0over90.txt`) was subtracted from a copy of the original 0° calibration file using the `adjust-cal` script. The correction is applied from 100 Hz upward, since the microphone's directional behavior is negligible at low frequencies and the measurement data below that range is unreliable.
+   ![0° / 90° difference curve in REW](0over90.jpg)
 
-## Calibration Curves
+3. **Applying the correction** — the exported difference curve (`0over90_100hz+.txt`) was subtracted from a copy of the original 0° calibration file using the `adjust-cal` script. The correction is applied from 100 Hz upward, since the microphone's directional behavior is negligible at low frequencies and the measurement data below that range is unreliable.
 
-![Calibration Curves](calibration_curves.png)
+## Results
+
+### 0° vs 90° calibration curves
+
+The original 0° calibration (green) and the derived 90° calibration (red). The curves diverge above ~1 kHz as expected, with the 90° file compensating for the off-axis roll-off.
+
+![0° vs 90° calibration files](0_vs_90_deg_derived_cal.jpg)
+
+### Verification: measurements with derived calibration
+
+Both measurements of the same source loaded with their respective calibration files. The traces closely overlap, confirming the derived 90° calibration is working correctly.
+
+![0° and 90° measurements with calibration applied](0and90deg_with_derived_cal_file.jpg)
 
 ## Setup
 
